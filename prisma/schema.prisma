@@ -1,0 +1,49 @@
+generator client {
+  provider             = "prisma-client-py"
+  interface            = "asyncio"
+  recursive_type_depth = 5
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+model User {
+  id    String  @id @unique
+  admin Boolean @default(false)
+
+  openedTickets   Ticket[] @relation("OpenedTickets")
+  closedTickets   Ticket[] @relation("ClosedTickets")
+  assignedTickets Ticket[] @relation("AssignedTickets")
+
+  createdAt DateTime @default(now())
+}
+
+model Ticket {
+  id          String       @id @unique @default(cuid())
+  title       String
+  description String
+  status      TicketStatus @default(OPEN)
+
+  msgTs    String @unique
+  ticketTs String @unique
+
+  openedBy   User   @relation("OpenedTickets", fields: [openedById], references: [id])
+  openedById String
+
+  closedBy   User?   @relation("ClosedTickets", fields: [closedById], references: [id])
+  closedById String?
+  closedAt DateTime?
+
+  assignedTo   User?   @relation("AssignedTickets", fields: [assignedToId], references: [id])
+  assignedToId String?
+
+  createdAt DateTime @default(now())
+}

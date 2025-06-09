@@ -1,11 +1,13 @@
 [project]
-name = "slacktemplate"
+name = "nephthys"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "aiohttp>=3.11.14",
+    "prisma>=0.15.0",
+    "pydantic>=2.11.5",
     "python-dotenv>=1.1.0",
     "slack-bolt>=1.23.0",
     "starlette>=0.46.1",
@@ -14,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-app = "app.__main__:start"
+nephthys = "nephthys.__main__:start"
 
 [build-system]
 requires = ["hatchling"]
@@ -24,3 +26,10 @@ build-backend = "hatchling.build"
 dev = [
     "pre-commit>=4.1.0",
 ]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+[tool.hatch.envs.default]
+path = "./.venv/"

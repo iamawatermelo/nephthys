@@ -4,9 +4,9 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.routing import Route
 
-from app.__main__ import main
-from app.utils.env import env
-from app.utils.slack import app as slack_app
+from nephthys.__main__ import main
+from nephthys.utils.env import env
+from nephthys.utils.slack import app as slack_app
 
 req_handler = AsyncSlackRequestHandler(slack_app)
 

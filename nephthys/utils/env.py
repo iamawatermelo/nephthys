@@ -4,6 +4,7 @@ from aiohttp import ClientSession
 from dotenv import load_dotenv
 from slack_sdk.web.async_client import AsyncWebClient
 
+from prisma import Prisma
 
 load_dotenv(override=True)
 
@@ -11,10 +12,13 @@ load_dotenv(override=True)
 class Environment:
     def __init__(self):
         self.slack_bot_token = os.environ.get("SLACK_BOT_TOKEN", "unset")
+        self.slack_user_token = os.environ.get("SLACK_USER_TOKEN", "unset")
         self.slack_signing_secret = os.environ.get("SLACK_SIGNING_SECRET", "unset")
         self.slack_app_token = os.environ.get("SLACK_APP_TOKEN")
 
         self.environment = os.environ.get("ENVIRONMENT", "development")
+        self.slack_help_channel = os.environ.get("SLACK_HELP_CHANNEL", "unset")
+        self.slack_ticket_channel = os.environ.get("SLACK_TICKET_CHANNEL", "unset")
 
         self.port = int(os.environ.get("PORT", 3000))
 
@@ -26,6 +30,7 @@ class Environment:
             raise ValueError(f"Missing environment variables: {', '.join(unset)}")
 
         self.session: ClientSession
+        self.db = Prisma()
 
         self.slack_client = AsyncWebClient(token=self.slack_bot_token)
 
