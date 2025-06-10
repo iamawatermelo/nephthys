@@ -1,11 +1,21 @@
+from slack_sdk.web.async_client import AsyncWebClient
+
 from nephthys.data.transcript import Transcript
 from nephthys.utils.delete_thread import add_thread_to_delete_queue
 from nephthys.utils.env import env
 from nephthys.utils.logging import send_heartbeat
+from nephthys.utils.permissions import can_resolve
 from prisma.enums import TicketStatus
 
 
-async def resolve(ts: str, resolver: str, client):
+async def resolve(ts: str, resolver: str, client: AsyncWebClient):
+    allowed = can_resolve(resolver, ts)
+    if not allowed:
+        await send_heartbeat(
+            f"User {resolver} attempted to resolve ticket with ts {ts} without permission.",
+            messages=[f"Ticket TS: {ts}", f"Resolver ID: {resolver}"],
+        )
+        return
     ticket = await env.db.ticket.find_first(
         where={"msgTs": ts, "NOT": [{"status": TicketStatus.CLOSED}]}
     )
