@@ -39,7 +39,11 @@ async def update_helpers():
                 f"Creating new helper user {member_id} with info {user_info.get('name')}"
             )
             new_member_data_to_create.append(
-                {"id": member_id, "helper": True, "username": user_info["name"]}
+                {
+                    "id": member_id,
+                    "helper": True,
+                    "username": user_info.get("user", {}.get("name")),
+                }
             )
 
     if new_member_data_to_create:
