@@ -29,7 +29,7 @@
             "user": [
                 "chat:write"
             ],
-            "bot": [
+          "bot": [
                 "channels:history",
                 "channels:read",
                 "chat:write",

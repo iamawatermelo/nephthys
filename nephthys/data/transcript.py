@@ -28,7 +28,7 @@ oh, oh! it looks like this post has been marked as resolved by <@{{user_id}}>! i
     dm_magic_link_error = f":rac_nooo: something went wrong while generating the magic link, please bug <@{env.slack_maintainer_id}> (status: {{status}})"
 
     dm_magic_link_success = (
-        ":rac_cute: magic link sent! tell em to check their dms with slackbot :D"
+        ":rac_cute: magic link sent! tell em to check their dms with me :D"
     )
 
     dm_magic_link_message = ":rac_cute: hey there! i got told that you got a bit stuck so here's a magic link for ya :D\n{magic_link}"
