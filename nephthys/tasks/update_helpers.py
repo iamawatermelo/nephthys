@@ -38,11 +38,12 @@ async def update_helpers():
             logging.info(
                 f"Creating new helper user {member_id} with info {user_info.get('name')}"
             )
+            logging.info(f"User info for {member_id}: {user_info}")
             new_member_data_to_create.append(
                 {
                     "id": member_id,
                     "helper": True,
-                    "username": user_info.get("user", {}.get("name")),
+                    "username": user_info.get("user", {}).get("name"),
                 }
             )
 

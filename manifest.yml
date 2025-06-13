@@ -13,7 +13,16 @@
         "bot_user": {
             "display_name": "helper heidi",
             "always_online": false
-        }
+        },
+        "slash_commands": [
+          {
+            "command": "/dm-magic-link",
+            "url": "https://nephthys.hackclub.com/slack/events",
+            "description": "Send a magic login link to a user",
+            "usage_hint": "<@user>",
+            "should_escape": true
+          }
+        ]
     },
     "oauth_config": {
         "scopes": {
@@ -34,8 +43,9 @@
                 "reactions:read",
                 "reactions:write",
                 "usergroups:read",
+                "usergroups:write",
                 "users:read",
-                "usergroups:write"
+                "users:read.email"
             ]
         }
     },
