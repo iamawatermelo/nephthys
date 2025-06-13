@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from slack_sdk.web.async_client import AsyncWebClient
 
 from nephthys.data.transcript import Transcript
@@ -9,7 +11,7 @@ from prisma.enums import TicketStatus
 
 
 async def resolve(ts: str, resolver: str, client: AsyncWebClient):
-    allowed = can_resolve(resolver, ts)
+    allowed = await can_resolve(resolver, ts)
     if not allowed:
         await send_heartbeat(
             f"User {resolver} attempted to resolve ticket with ts {ts} without permission.",
@@ -22,9 +24,14 @@ async def resolve(ts: str, resolver: str, client: AsyncWebClient):
     if not ticket:
         return
 
+    now = datetime.now()
     tkt = await env.db.ticket.update(
         where={"msgTs": ts},
-        data={"status": TicketStatus.CLOSED, "closedBy": {"connect": {"id": resolver}}},
+        data={
+            "status": TicketStatus.CLOSED,
+            "closedBy": {"connect": {"id": resolver}},
+            "closedAt": now,
+        },
     )
     if not tkt:
         await send_heartbeat(
@@ -35,7 +42,7 @@ async def resolve(ts: str, resolver: str, client: AsyncWebClient):
 
     await client.chat_postMessage(
         channel=env.slack_help_channel,
-        text=Transcript.ticket_resolve,
+        text=Transcript.ticket_resolve.format(user_id=resolver),
         thread_ts=ts,
     )
 

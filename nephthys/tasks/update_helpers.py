@@ -1,0 +1,46 @@
+import logging
+
+from nephthys.utils.env import env
+
+
+async def update_helpers():
+    res = await env.slack_client.conversations_members(channel=env.slack_bts_channel)
+    team_ids = res.get("members", [])
+
+    if not team_ids:
+        # if this happens then something concerning has happened :p
+        await env.slack_client.chat_postMessage(
+            channel=env.slack_bts_channel,
+            text=f"No members found in the bts channel. <@{env.slack_maintainer_id}>",
+        )
+        return
+
+    # unset helpers not in the team
+    await env.db.user.update_many(
+        where={"helper": True, "id": {"not_in": team_ids}},
+        data={"helper": False},
+    )
+
+    # update existing users in the db
+    await env.db.user.update_many(
+        where={"id": {"in": team_ids}},
+        data={"helper": True},
+    )
+
+    # create new users not in the db
+    existing_users_in_db = await env.db.user.find_many(where={"id": {"in": team_ids}})
+    existing_user_ids_in_db = {user.id for user in existing_users_in_db}
+
+    new_member_data_to_create = []
+    for member_id in team_ids:
+        if member_id not in existing_user_ids_in_db:
+            user_info = await env.slack_client.users_info(user=member_id)
+            logging.info(
+                f"Creating new helper user {member_id} with info {user_info.get('name')}"
+            )
+            new_member_data_to_create.append(
+                {"id": member_id, "helper": True, "username": user_info["name"]}
+            )
+
+    if new_member_data_to_create:
+        await env.db.user.create_many(data=new_member_data_to_create)

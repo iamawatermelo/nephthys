@@ -16,12 +16,16 @@ enum TicketStatus {
 }
 
 model User {
-  id    String  @id @unique
-  admin Boolean @default(false)
+  id       String  @id @unique
+  username String? @unique
+  admin    Boolean @default(false)
 
   openedTickets   Ticket[] @relation("OpenedTickets")
   closedTickets   Ticket[] @relation("ClosedTickets")
   assignedTickets Ticket[] @relation("AssignedTickets")
+
+  tagSubscriptions UserTagSubscription[]
+  helper           Boolean               @default(false)
 
   createdAt DateTime @default(now())
 }
@@ -38,12 +42,48 @@ model Ticket {
   openedBy   User   @relation("OpenedTickets", fields: [openedById], references: [id])
   openedById String
 
-  closedBy   User?   @relation("ClosedTickets", fields: [closedById], references: [id])
+  closedBy   User?     @relation("ClosedTickets", fields: [closedById], references: [id])
   closedById String?
-  closedAt DateTime?
+  closedAt   DateTime?
 
   assignedTo   User?   @relation("AssignedTickets", fields: [assignedToId], references: [id])
   assignedToId String?
 
+  tagsOnTickets TagsOnTickets[]
+
   createdAt DateTime @default(now())
+}
+
+model Tag {
+  id   String @id @unique @default(cuid())
+  name String @unique
+
+  ticketsOnTags TagsOnTickets[]
+
+  userSubscriptions UserTagSubscription[]
+  createdAt DateTime @default(now())
+}
+
+model TagsOnTickets {
+  ticket   Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  ticketId String
+  tag      Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId    String
+
+  assignedAt DateTime @default(now())
+
+  @@id([ticketId, tagId])
+  @@map("tags_on_tickets")
+}
+
+model UserTagSubscription {
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId  String
+
+  subscribedAt DateTime @default(now())
+
+  @@id([userId, tagId])
+  @@map("user_tag_subscriptions")
 }

@@ -13,5 +13,10 @@ someone should be along to help you soon but in the mean time i suggest you read
     """
 
     ticket_resolve = f"""
-oh, oh! it looks like this post has been marked as resolved by (user)! if you have any more questions, please make a new post in <#{env.slack_help_channel}> and someone'll be happy to help you out! not me though, i'm just a silly racoon ^-^
+oh, oh! it looks like this post has been marked as resolved by <@{{user_id}}>! if you have any more questions, please make a new post in <#{env.slack_help_channel}> and someone'll be happy to help you out! not me though, i'm just a silly racoon ^-^
     """
+
+    home_unknown_user_title = ":upside-down_orpheus: woah, stop right there {name}!"
+    home_unknown_user_text = f"heyyyy, heidi here! it looks like i'm not allowed to show ya this. sorry! if you think this is a mistake, please reach out to <@{env.slack_maintainer_id}> and she'll lmk what to do!"
+
+    not_allowed_channel = f"heya, it looks like you're not supposed to be in that channel, pls talk to <@{env.slack_maintainer_id}> if that's wrong"

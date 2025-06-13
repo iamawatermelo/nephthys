@@ -5,6 +5,7 @@ from slack_sdk.web.async_client import AsyncWebClient
 
 from nephthys.data.transcript import Transcript
 from nephthys.utils.env import env
+from nephthys.utils.logging import send_heartbeat
 
 ALLOWED_SUBTYPES = ["file_share", "me_message"]
 
@@ -13,7 +14,6 @@ async def on_message(event: Dict[str, Any], client: AsyncWebClient):
     """
     Handle incoming messages in Slack.
     """
-    print("Received message event:", event)
     if "subtype" in event and event["subtype"] not in ALLOWED_SUBTYPES:
         return
 
@@ -30,11 +30,23 @@ async def on_message(event: Dict[str, Any], client: AsyncWebClient):
         past_tickets = await env.db.ticket.count(where={"openedById": user})
     else:
         past_tickets = 0
+        user_info = await client.users_info(user=user) or {}
+        username = user_info.get("user", {})[
+            "name"
+        ]  # this should never actually be empty but if it is, that is a major issue
+
+        if not username:
+            await send_heartbeat(
+                f"SOMETHING HAS GONE TERRIBLY WRONG <@{user}> has no username found - <@{env.slack_maintainer_id}>"
+            )
         db_user = await env.db.user.upsert(
             where={
                 "id": user,
             },
-            data={"create": {"id": user}, "update": {"id": user}},
+            data={
+                "create": {"id": user, "username": username},
+                "update": {"id": user, "username": username},
+            },
         )
 
     user_info = await client.users_info(user=user)
@@ -51,6 +63,16 @@ async def on_message(event: Dict[str, Any], client: AsyncWebClient):
         text=f"New message from <@{user}>: {text}",
         blocks=[
             {
+                "type": "input",
+                "label": {"type": "plain_text", "text": "Tag ticket", "emoji": True},
+                "element": {
+                    "action_id": "tag-list",
+                    "type": "multi_external_select",
+                    "placeholder": {"type": "plain_text", "text": "Select tags"},
+                    "min_query_length": 1,
+                },
+            },
+            {
                 "type": "context",
                 "elements": [
                     {
@@ -58,7 +80,7 @@ async def on_message(event: Dict[str, Any], client: AsyncWebClient):
                         "text": f"Submitted by <@{user}>. They have {past_tickets} past tickets. <{thread_url}|View thread>.",
                     }
                 ],
-            }
+            },
         ],
         username=display_name or None,
         icon_url=profile_pic or None,

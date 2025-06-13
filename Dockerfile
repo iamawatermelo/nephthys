@@ -15,4 +15,6 @@ EXPOSE 3000
 
 ENV PATH="/app/.venv/bin:$PATH"
 
+RUN prisma db push
+
 CMD ["nephthys"]

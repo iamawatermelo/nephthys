@@ -7,6 +7,7 @@ from aiohttp import ClientSession
 from dotenv import load_dotenv
 from starlette.applications import Starlette
 
+from nephthys.tasks.update_helpers import update_helpers
 from nephthys.utils.delete_thread import process_queue
 from nephthys.utils.env import env
 from nephthys.utils.logging import send_heartbeat
@@ -30,6 +31,7 @@ async def main(_app: Starlette):
         env.session = session
         await env.db.connect()
         delete_msg_task = asyncio.create_task(process_queue())
+        await update_helpers()
         handler = None
         if env.slack_app_token:
             if env.environment == "production":
