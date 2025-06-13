@@ -12,15 +12,15 @@ def get_buttons(user: User, current: str = "dashboard"):
             **({"style": "primary"} if current != "dashboard" else {}),
         }
     )
-    if user.admin:
-        buttons.append(
-            {
-                "type": "button",
-                "text": {"type": "plain_text", "text": "Tags", "emoji": True},
-                "action_id": "tags",
-                **({"style": "primary"} if current != "tags" else {}),
-            }
-        )
+    # if user.admin:
+    buttons.append(
+        {
+            "type": "button",
+            "text": {"type": "plain_text", "text": "Tags", "emoji": True},
+            "action_id": "tags",
+            **({"style": "primary"} if current != "tags" else {}),
+        }
+    )
 
     buttons.append(
         {
