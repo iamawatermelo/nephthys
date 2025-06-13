@@ -1,35 +1,62 @@
 {
     "display_information": {
-        "name": "Nephthys",
-        "description": "✋✋✋✋",
+        "name": "helper heidi",
+        "description": "helping you make your summer (and my partner proud)",
         "background_color": "#c47600"
     },
     "features": {
+        "app_home": {
+            "home_tab_enabled": true,
+            "messages_tab_enabled": false,
+            "messages_tab_read_only_enabled": true
+        },
         "bot_user": {
-            "display_name": "Nephthys",
+            "display_name": "helper heidi",
             "always_online": false
         }
     },
     "oauth_config": {
         "scopes": {
+            "user": [
+                "chat:write"
+            ],
             "bot": [
+                "channels:history",
+                "channels:read",
                 "chat:write",
                 "chat:write.customize",
                 "chat:write.public",
+                "groups:history",
+                "groups:read",
+                "groups:write",
                 "im:write",
-                "users:read",
+                "mpim:read",
                 "reactions:read",
                 "reactions:write",
-                "commands"
+                "usergroups:read",
+                "users:read",
+                "usergroups:write"
             ]
         }
     },
     "settings": {
+        "event_subscriptions": {
+            "request_url": "https://nephthys.hackclub.com/slack/events",
+            "bot_events": [
+                "app_home_opened",
+                "member_joined_channel",
+                "member_left_channel",
+                "message.channels",
+                "message.groups"
+            ]
+        },
         "interactivity": {
-            "is_enabled": true
+            "is_enabled": true,
+            "request_url": "https://nephthys.hackclub.com/slack/events",
+            "message_menu_options_url": "https://nephthys.hackclub.com/slack/events"
         },
         "org_deploy_enabled": false,
-        "socket_mode_enabled": true,
+        "socket_mode_enabled": false,
         "token_rotation_enabled": false
     }
 }
