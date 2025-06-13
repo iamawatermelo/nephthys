@@ -2,6 +2,7 @@ from slack_bolt.adapter.starlette.async_handler import AsyncSlackRequestHandler
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import JSONResponse
+from starlette.responses import RedirectResponse
 from starlette.routing import Route
 
 from nephthys.__main__ import main
@@ -30,9 +31,14 @@ async def health(req: Request):
     )
 
 
+async def root():
+    return RedirectResponse(url="https://github.com/hackclub/nephthys")
+
+
 app = Starlette(
     debug=True if env.environment != "production" else False,
     routes=[
+        Route(path="/", endpoint=root, methods=["GET"]),
         Route(path="/slack/events", endpoint=endpoint, methods=["POST"]),
         Route(path="/health", endpoint=health, methods=["GET"]),
     ],
