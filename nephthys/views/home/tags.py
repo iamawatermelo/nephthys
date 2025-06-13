@@ -18,7 +18,7 @@ async def get_manage_tags_view(user: User) -> dict:
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": ":rac_nooo: i couldn't scrounge up any tags, you can make a new one below though",
+                    "text": f":rac_nooo: i couldn't scrounge up any tags{', you can make a new one below though' if user.admin else ''}",
                 },
             }
         )
