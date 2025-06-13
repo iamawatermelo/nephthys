@@ -23,36 +23,36 @@ async def get_manage_tags_view(user: User) -> dict:
             }
         )
 
-        for tag in tags:
-            logging.info(f"Tag {tag.name} with id {tag.id} found in the database")
-            logging.info(
-                f"Tag {tag.name} has {len(tag.userSubscriptions) if tag.userSubscriptions else 0} subscriptions"
-            )
-            if tag.userSubscriptions:
-                subs = [user.userId for user in tag.userSubscriptions]
-            else:
-                subs = []
-            stringified_subs = [f"<@{user}>" for user in subs]
-            blocks.append(
-                {
-                    "type": "section",
+    for tag in tags:
+        logging.info(f"Tag {tag.name} with id {tag.id} found in the database")
+        logging.info(
+            f"Tag {tag.name} has {len(tag.userSubscriptions) if tag.userSubscriptions else 0} subscriptions"
+        )
+        if tag.userSubscriptions:
+            subs = [user.userId for user in tag.userSubscriptions]
+        else:
+            subs = []
+        stringified_subs = [f"<@{user}>" for user in subs]
+        blocks.append(
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"*{tag.name}* - {''.join(stringified_subs) if stringified_subs else ':rac_nooo: no subscriptions'}",
+                },
+                "accessory": {
+                    "type": "button",
                     "text": {
-                        "type": "mrkdwn",
-                        "text": f"*{tag.name}* - {''.join(stringified_subs) if stringified_subs else ':rac_nooo: no subscriptions'}",
+                        "type": "plain_text",
+                        "text": f":rac_cute: {'subscribe' if user.id not in subs else 'unsubscribe'}",
+                        "emoji": True,
                     },
-                    "accessory": {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": f":rac_cute: {'subscribe' if user.id not in subs else 'unsubscribe'}",
-                            "emoji": True,
-                        },
-                        "action_id": "tag-subscribe",
-                        "value": f"{tag.id};{tag.name}",
-                        "style": "primary" if user.id not in subs else "danger",
-                    },
-                }
-            )
+                    "action_id": "tag-subscribe",
+                    "value": f"{tag.id};{tag.name}",
+                    "style": "primary" if user.id not in subs else "danger",
+                },
+            }
+        )
 
     view = {
         "type": "home",
