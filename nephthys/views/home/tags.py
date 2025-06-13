@@ -99,3 +99,5 @@ async def get_manage_tags_view(user: User) -> dict:
                 ],
             }
         )
+
+    return view
