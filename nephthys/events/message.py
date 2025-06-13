@@ -69,7 +69,7 @@ async def on_message(event: Dict[str, Any], client: AsyncWebClient):
                     "action_id": "tag-list",
                     "type": "multi_external_select",
                     "placeholder": {"type": "plain_text", "text": "Select tags"},
-                    "min_query_length": 1,
+                    "min_query_length": 0,
                 },
             },
             {
