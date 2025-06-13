@@ -31,7 +31,7 @@ async def health(req: Request):
     )
 
 
-async def root():
+async def root(req: Request):
     return RedirectResponse(url="https://github.com/hackclub/nephthys")
 
 

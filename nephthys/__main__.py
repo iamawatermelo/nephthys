@@ -48,7 +48,7 @@ async def main(_app: Starlette):
             await handler.connect_async()
 
         logging.info(f"Starting Uvicorn on port {env.port}")
-        await delete_msg_task
+
         yield
         delete_msg_task.cancel()
 
