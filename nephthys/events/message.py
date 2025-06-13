@@ -55,7 +55,8 @@ async def on_message(event: Dict[str, Any], client: AsyncWebClient):
     if user_info:
         profile_pic = user_info["user"]["profile"].get("image_512", "")
         display_name = (
-            user_info["user"]["profile"]["display_name"] or user["user"]["real_name"]
+            user_info["user"]["profile"]["display_name"]
+            or user_info["user"]["real_name"]
         )
 
     ticket = await client.chat_postMessage(
