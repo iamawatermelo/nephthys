@@ -23,17 +23,6 @@ async def get_manage_tags_view(user: User) -> dict:
             }
         )
 
-    else:
-        blocks.append(
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": ":rac_info: here are the tags i found!",
-                },
-            }
-        )
-
         for tag in tags:
             logging.info(f"Tag {tag.name} with id {tag.id} found in the database")
             logging.info(
@@ -65,7 +54,7 @@ async def get_manage_tags_view(user: User) -> dict:
                 }
             )
 
-    return {
+    view = {
         "type": "home",
         "blocks": [
             {
@@ -82,11 +71,18 @@ async def get_manage_tags_view(user: User) -> dict:
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": ":rac_thumbs: here you can manage tags and user subscriptions",
+                    "text": ":rac_thumbs: here you can manage tags and your subscriptions"
+                    if user.admin
+                    else ":rac_thumbs: here you can manage your tag subscriptions",
                 },
             },
             {"type": "divider"},
             *blocks,
+        ],
+    }
+
+    if user.admin:
+        view["blocks"].append(
             {
                 "type": "actions",
                 "elements": [
@@ -101,6 +97,5 @@ async def get_manage_tags_view(user: User) -> dict:
                         "style": "primary",
                     }
                 ],
-            },
-        ],
-    }
+            }
+        )

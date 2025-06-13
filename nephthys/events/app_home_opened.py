@@ -39,12 +39,7 @@ async def open_app_home(home_type: str, client: AsyncWebClient, user_id: str):
                 case "default" | "dashboard":
                     view = await get_helper_view(user)
                 case "tags":
-                    if user.admin:
-                        view = await get_manage_tags_view(user)
-                    else:
-                        view = get_error_view(
-                            "You do not have permission to access this page."
-                        )
+                    view = await get_manage_tags_view(user)
                 case "my-stats":
                     view = await get_stats_view(user)
                 case _:
