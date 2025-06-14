@@ -23,10 +23,13 @@ async def health(req: Request):
     except Exception:
         slack_healthy = False
 
+    db_healthy = env.db.is_connected()
+
     return JSONResponse(
         {
             "healthy": slack_healthy,
             "slack": slack_healthy,
+            "database": db_healthy,
         }
     )
 

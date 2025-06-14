@@ -1,4 +1,4 @@
-# Slack Template
+# Nephthys
 
 This is a Slack template for creating a great Slack app using Python and Starlette.
 
