@@ -130,3 +130,14 @@ async def on_message(event: Dict[str, Any], client: AsyncWebClient):
     await client.reactions_add(
         channel=event["channel"], name="thinking_face", timestamp=event["ts"]
     )
+
+    if env.uptime_url and env.environment == "production":
+        async with env.session.post(env.uptime_url) as res:
+            if res.status != 200:
+                await send_heartbeat(
+                    f"Failed to ping uptime URL: {res.status} - {await res.text()}"
+                )
+            else:
+                await send_heartbeat(
+                    f"Successfully pinged uptime URL: {res.status} - {await res.text()}"
+                )
