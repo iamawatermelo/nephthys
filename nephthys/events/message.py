@@ -132,7 +132,7 @@ async def on_message(event: Dict[str, Any], client: AsyncWebClient):
     )
 
     if env.uptime_url and env.environment == "production":
-        async with env.session.post(env.uptime_url) as res:
+        async with env.session.get(env.uptime_url) as res:
             if res.status != 200:
                 await send_heartbeat(
                     f"Failed to ping uptime URL: {res.status} - {await res.text()}"
