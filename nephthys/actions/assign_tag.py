@@ -77,11 +77,13 @@ async def assign_tag_callback(
         for tag in tags
     ]
     url = f"https://hackclub.slack.com/archives/{env.slack_help_channel}/p{ticket.msgTs.replace('.', '')}"
+    ticket_url = f"https://hackclub.slack.com/archives/{env.slack_ticket_channel}/p{ticket.ticketTs.replace('.', '')}"
 
     for user in users:
         formatted_tags = ", ".join(
             [tag["name"] for tag in new_tags if tag["value"] in user["tags"]]
         )
         await client.chat_postMessage(
-            channel=user["id"], text=f"New ticket for {formatted_tags}!\n{url}"
+            channel=user["id"],
+            text=f"New ticket for {formatted_tags}!\n<{url}|ticket> <{ticket_url}|bts ticket>",
         )
