@@ -29,9 +29,6 @@ async def get_manage_tags_view(user: User) -> dict:
             f"Tag {tag.name} has {len(tag.userSubscriptions) if tag.userSubscriptions else 0} subscriptions"
         )
         if tag.userSubscriptions:
-            # Yes, there's a better way to do this.
-            # No, I don't care.
-            
             subIds = [user.userId for user in tag.userSubscriptions]
             
             subUsers = await env.db.user.find_many(

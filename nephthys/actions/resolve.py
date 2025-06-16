@@ -14,7 +14,7 @@ async def resolve(ts: str, resolver: str, client: AsyncWebClient):
     resolving_user = await env.db.user.find_unique(where={"slackId": resolver})
     if not resolving_user:
         await send_heartbeat(
-            f"User {resolver} attempted to resolve ticket with ts {ts} without permission. (Doesn't exist in DB)",
+            f"User {resolver} attempted to resolve ticket with ts {ts} but isn't in the database.",
             messages=[f"Ticket TS: {ts}", f"Resolver ID: {resolver}"],
         )
         return
